@@ -5,6 +5,7 @@ import localforage from 'localforage';
 import Header from './Header';
 import Info from './Info';
 import '../styles/Main.css';
+import { LioWebRTC } from 'react-liowebrtc';
 
 const bulletThrowInterval = 100;
 const bulletSpeedInterval = 50;
@@ -13,6 +14,7 @@ const enemiesThrowInterval = 2000;
 const enemiesSpeedInterval = 100;
 const enemiesSpeedSize = 10;
 const numberOfBlasters = 3;
+
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -37,6 +39,10 @@ export default class Main extends React.Component {
             playerName: null,
             deviceOrientation: {
                 x: null,
+            },
+            options: {
+                debug: true,
+                dataOnly: true
             }
         }
 
@@ -75,6 +81,7 @@ export default class Main extends React.Component {
         this.refs.mainContainer.focus();
     }
 
+    ////////////////////////////////////////////////////////////
 
     setOrientation = (e) => {
         this.setState({
@@ -82,7 +89,35 @@ export default class Main extends React.Component {
                 x: Math.floor(e.gamma),
             }
         })
+        this.addChat()
     }
+
+    join = (webrtc) => {
+        console.log('???????????', webrtc)
+        webrtc.joinRoom('my-p2p-app-demo')
+    }
+
+    handleCreatedPeer = (webrtc, peer) => {
+        console.log('handleCreatedPeer!!!!!!!!!!!!!')
+        this.addChat(`Peer-${peer.id.substring(0, 5)} joined the room!`, ' ', true);
+    }
+    
+    handlePeerData = (webrtc, type, payload, peer) => {
+        console.log('handlePeerData!!!!!!!!!!!!')
+        switch(type) {
+        case 'chat':
+            this.addChat(`Peer-${peer.id.substring(0, 5)}`, payload);
+            break;
+        default:
+            return;
+        };
+    }
+    
+    addChat = (name, message, alert = false) => {
+        console.log('CHAT CHAT CHAT')
+    }
+
+    ////////////////////////////////////////////////////////////
 
     getBoundaries() {
         let rectCoordinates = this.refs.gameRegion.getBoundingClientRect();
@@ -330,10 +365,17 @@ export default class Main extends React.Component {
     }
 
     render() {
-        const { deviceOrientation } = this.state
+        const { deviceOrientation, options } = this.state
 
         
         return (
+            <LioWebRTC
+                options={options}
+                onReady={this.join}
+                onCreatedPeer={this.handleCreatedPeer}
+                onReceivedPeerData={this.handlePeerData}
+            >
+            <h1>X: {deviceOrientation.x}</h1>
             <div className="mainContainer" ref="mainContainer" tabIndex="0" onKeyPress={this.keyPress.bind(this)}>
                 <Header playerName={this.state.playerName} />
                 {/* <h1>X: {deviceOrientation.x}</h1> */}
@@ -371,6 +413,7 @@ export default class Main extends React.Component {
                     </div>
                 </div>
             </div>
+            </LioWebRTC>
         )
     }
 }
