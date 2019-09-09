@@ -1,3 +1,8 @@
+.sky {
+    position: absolute;
+    z-index: 0;
+}
+
 .mainContainer {
     display: flex;
     flex-direction: column;
@@ -23,8 +28,8 @@
     flex-direction: column;
     position: relative;
     justify-content: space-between;
-    background-color:grey;
-    background-image:url("http://giphygifs.s3.amazonaws.com/media/fmsA2RG7TKxuo/giphy.gif");  
+    /* background-color:grey; */
+    /* background-image:url("http://giphygifs.s3.amazonaws.com/media/fmsA2RG7TKxuo/giphy.gif");   */
     width: 100%;
     max-width: 50rem;
     height: 100%;
@@ -41,7 +46,7 @@
 }
 
 .playerImage {
-    /* height: 30px; */
+    height: 75px;
 }
 
 .controls {

@@ -10,9 +10,14 @@ import { LioWebRTC } from 'react-liowebrtc';
 
 import GamePlay from './GamePlay.js'
 
+import drawSky from './Sky.js'
+
 class App extends Component {
 	constructor(props) {
 		super(props);
+
+		this.skyRef = null;
+
 		this.state = {
 			options: {
                 debug: true,
@@ -22,6 +27,11 @@ class App extends Component {
 			x: null,
 		}
 		this.checkLogin();
+	}
+
+	componentDidMount() {
+		const node = this.skyRef
+		drawSky(node)
 	}
 
 	checkLogin() {
@@ -81,6 +91,7 @@ class App extends Component {
 		return (
 			<MuiThemeProvider key="themeProvider">
 				<div className="container" key="container">
+				<canvas className="sky" ref={(node) => { this.skyRef = node}}></canvas>
 				<LioWebRTC
 					options={options}
 					onReady={this.join}
