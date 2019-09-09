@@ -9,7 +9,7 @@ import '../styles/Main.css';
 const bulletThrowInterval = 100;
 const bulletSpeedInterval = 50;
 const bulletSpeedSize = 10;
-const enemiesThrowInterval = 500;
+const enemiesThrowInterval = 2000;
 const enemiesSpeedInterval = 100;
 const enemiesSpeedSize = 10;
 const numberOfBlasters = 3;
@@ -35,6 +35,9 @@ export default class Main extends React.Component {
             numberOfBlasters,
             shipImage: 'spaceship.png',
             playerName: null,
+            deviceOrientation: {
+                x: null,
+            }
         }
 
     }
@@ -58,12 +61,27 @@ export default class Main extends React.Component {
     }
 
     componentDidMount() {
+        if (window.DeviceOrientationEvent) {
+            console.log('woohoooo! DeviceOrientation is ON')
+            window.addEventListener('deviceorientation', this.setOrientation);
+        } else {
+            console.log('we dont.....')
+        }
         this.checkPlayerName();
         this.fire();
         this.setState({
             bottom: this.getBoundaries().bottom - 120
         });
         this.refs.mainContainer.focus();
+    }
+
+
+    setOrientation = (e) => {
+        this.setState({
+            deviceOrientation: {
+                x: Math.floor(e.gamma),
+            }
+        })
     }
 
     getBoundaries() {
@@ -312,9 +330,13 @@ export default class Main extends React.Component {
     }
 
     render() {
+        const { deviceOrientation } = this.state
+
+        
         return (
             <div className="mainContainer" ref="mainContainer" tabIndex="0" onKeyPress={this.keyPress.bind(this)}>
                 <Header playerName={this.state.playerName} />
+                {/* <h1>X: {deviceOrientation.x}</h1> */}
                 <div className="main">
                     <div className="gameRegion" ref="gameRegion" onMouseMove={this.mouseMove.bind(this)}>
                         <div key="gameRegionDiv" style={{ position: "relative" }}>
@@ -323,7 +345,15 @@ export default class Main extends React.Component {
                             {this.renderBullets()}
                         </div>
                         <div ref="playerRegion" className="playerRegion" >
-                            <div ref="player" className="player" style={{ alignContent: 'center', left: (this.state.playerStyle.left + "px").toString() }}>
+                            <div
+                                ref="player"
+                                className="player"
+                                style={{ 
+                                    alignContent: 'center', 
+                                    left: `calc(50% + ${(deviceOrientation.x * 5 + "px").toString()})`,
+                                    bottom: `100px`
+                                }}
+                            >
                                 <img src={"assets/images/" + this.state.shipImage} className="playerImage" alt="P" />
                             </div>
                         </div>

@@ -20,7 +20,7 @@
     position: relative;
     justify-content: space-between;
     background-color:grey;
-    background-image:url("../assets/images/background.png");  
+    background-image:url("http://giphygifs.s3.amazonaws.com/media/fmsA2RG7TKxuo/giphy.gif");  
     width: 100%;
     max-width: 50rem;
     height: 100%;
@@ -37,7 +37,7 @@
 }
 
 .playerImage {
-    height: 30px;
+    /* height: 30px; */
 }
 
 .controls {
