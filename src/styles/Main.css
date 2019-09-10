@@ -31,14 +31,14 @@
     /* background-color:grey; */
     /* background-image:url("http://giphygifs.s3.amazonaws.com/media/fmsA2RG7TKxuo/giphy.gif");   */
     width: 100%;
-    max-width: 50rem;
+    /* max-width: 50rem; */
     height: 100%;
 }
 
 .playerRegion {
     position: relative;
     width: 100%;
-    height: 6%;
+    height: 15%;
 }
 
 .player {

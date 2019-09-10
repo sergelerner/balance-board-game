@@ -10,9 +10,9 @@ import { withWebRTC } from 'react-liowebrtc';
 const bulletThrowInterval = 100;
 const bulletSpeedInterval = 50;
 const bulletSpeedSize = 10;
-const enemiesThrowInterval = 2000;
-const enemiesSpeedInterval = 100;
-const enemiesSpeedSize = 10;
+const enemiesThrowInterval = 5000;
+const enemiesSpeedInterval = 500;
+const enemiesSpeedSize = 20;
 const numberOfBlasters = 3;
 
 
@@ -20,7 +20,7 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pause: true,
+            pause: false,
             playerStyle: {
                 left: 0
             },
@@ -66,6 +66,7 @@ class Main extends React.Component {
         } else {
             console.log('we dont.....')
         }
+
         this.checkPlayerName();
         this.fire();
         this.setState({
@@ -78,7 +79,6 @@ class Main extends React.Component {
 
     setOrientation = (e) => {
         const x = Math.floor(e.gamma)
-
         this.props.webrtc.shout('chat', x);
         this.props.onSend(x);
     }
@@ -132,7 +132,7 @@ class Main extends React.Component {
         this.setState({ enemiesX, enemiesY, enemyCount });
     }
 
-    mouseMove(event) {        
+    mouseMove(event) {  
         if (!this.state.pause) {
             let { left, width } = this.getBoundaries();
             width = width - 30;
@@ -198,8 +198,11 @@ class Main extends React.Component {
     }
 
     createBullet(index, left, top) {
+        const key = `bullet_${index}`
         return (
-            <div key={`bullet_${index}`} style={{ position: 'absolute', left, top, alignContent: 'center' }} >
+            <div 
+                key={key} 
+                style={{ position: 'absolute', left, top, alignContent: 'center' }} >
                 <img src="assets/images/bullet.png" alt="b" />
             </div>
         )
@@ -226,8 +229,9 @@ class Main extends React.Component {
             let enemiesYIndex = this.state.enemiesY[index];
             if (enemiesYIndex < bottom) {
                 if (aliveEnemies[index] === 1) {
+                    const key = `enemy_${index}`
                     return (
-                        <div key={`enemy_${index}`} style={{ position: 'absolute', left: left, top: top, alignContent: 'center' }}>
+                        <div key={key} style={{ position: 'absolute', left: left, top: top, alignContent: 'center' }}>
                             <img src="assets/images/enemy.png" width="50px" alt='e' />
                         </div>
                     )
@@ -257,7 +261,6 @@ class Main extends React.Component {
         };
     }
 
-
     showShipBlast(blast = true) {
         let img = blast ? "blast.gif" : "spaceship.png";
         this.setState({
@@ -284,7 +287,7 @@ class Main extends React.Component {
         }
     }
 
-    renderPlayButton() {
+    yrenderPlayButton() {
         if (!this.state.gameOver) {
             if (this.state.pause) {
                 return <span>Play</span>;
@@ -352,8 +355,7 @@ class Main extends React.Component {
                                 className="player"
                                 style={{ 
                                     alignContent: 'center', 
-                                    left: `calc(50% + ${(x * 5 + "px").toString()})`,
-                                    bottom: `100px`
+                                    left: `calc(50% + ${(x * 10 + "px").toString()})`,
                                 }}
                             >
                                 <img src={"assets/images/" + this.state.shipImage} className="playerImage" alt="P" />
