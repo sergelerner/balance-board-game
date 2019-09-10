@@ -5,16 +5,18 @@ import localforage from 'localforage';
 import Header from './Header';
 import Info from './Info';
 import '../styles/Main.css';
+import { withWebRTC } from 'react-liowebrtc';
 
 const bulletThrowInterval = 100;
 const bulletSpeedInterval = 50;
 const bulletSpeedSize = 10;
-const enemiesThrowInterval = 500;
+const enemiesThrowInterval = 2000;
 const enemiesSpeedInterval = 100;
 const enemiesSpeedSize = 10;
 const numberOfBlasters = 3;
 
-export default class Main extends React.Component {
+
+class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,6 +60,12 @@ export default class Main extends React.Component {
     }
 
     componentDidMount() {
+        if (window.DeviceOrientationEvent) {
+            console.log('woohoooo! DeviceOrientation is ON')
+            window.addEventListener('deviceorientation', this.setOrientation);
+        } else {
+            console.log('we dont.....')
+        }
         this.checkPlayerName();
         this.fire();
         this.setState({
@@ -65,6 +73,17 @@ export default class Main extends React.Component {
         });
         this.refs.mainContainer.focus();
     }
+
+    ////////////////////////////////////////////////////////////
+
+    setOrientation = (e) => {
+        const x = Math.floor(e.gamma)
+
+        this.props.webrtc.shout('chat', x);
+        this.props.onSend(x);
+    }
+
+    ////////////////////////////////////////////////////////////
 
     getBoundaries() {
         let rectCoordinates = this.refs.gameRegion.getBoundingClientRect();
@@ -113,7 +132,7 @@ export default class Main extends React.Component {
         this.setState({ enemiesX, enemiesY, enemyCount });
     }
 
-    mouseMove(event) {
+    mouseMove(event) {        
         if (!this.state.pause) {
             let { left, width } = this.getBoundaries();
             width = width - 30;
@@ -312,6 +331,11 @@ export default class Main extends React.Component {
     }
 
     render() {
+        const { x } = this.props
+
+        console.log('%c X','background: red;, color: white', x)
+
+        
         return (
             <div className="mainContainer" ref="mainContainer" tabIndex="0" onKeyPress={this.keyPress.bind(this)}>
                 <Header playerName={this.state.playerName} />
@@ -323,7 +347,15 @@ export default class Main extends React.Component {
                             {this.renderBullets()}
                         </div>
                         <div ref="playerRegion" className="playerRegion" >
-                            <div ref="player" className="player" style={{ alignContent: 'center', left: (this.state.playerStyle.left + "px").toString() }}>
+                            <div
+                                ref="player"
+                                className="player"
+                                style={{ 
+                                    alignContent: 'center', 
+                                    left: `calc(50% + ${(x * 5 + "px").toString()})`,
+                                    bottom: `100px`
+                                }}
+                            >
                                 <img src={"assets/images/" + this.state.shipImage} className="playerImage" alt="P" />
                             </div>
                         </div>
@@ -341,6 +373,9 @@ export default class Main extends React.Component {
                     </div>
                 </div>
             </div>
+            
         )
     }
 }
+
+export default withWebRTC(Main)

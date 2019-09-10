@@ -74,18 +74,18 @@ export default class Info extends React.Component {
                     </div>
                     <div className="infoChild">Blasters : {this.state.blasters}</div>
                 </div>
-                <div className="rightContent">
+                {/* <div className="rightContent">
                     <div className="infoLives"> {this.state.livesImage} </div>
                     {this.state.pause ? <div>Press 'Enter' to Play</div> : undefined}
-                </div>
-                <Dialog
+                </div> */}
+                {/* <Dialog
                     title="Controls"
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                 >
                     {message}
-                </Dialog>
+                </Dialog> */}
             </div>
         )
     }
