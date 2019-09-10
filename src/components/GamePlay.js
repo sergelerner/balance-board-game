@@ -77,7 +77,6 @@ class Main extends React.Component {
     ////////////////////////////////////////////////////////////
 
     setOrientation = (e) => {
-        console.log('SET ORIENTATION')
         const x = Math.floor(e.gamma)
 
         this.props.webrtc.shout('chat', x);

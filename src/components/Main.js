@@ -54,20 +54,19 @@ class App extends Component {
 	}
 
 	join = (webrtc) => {
-        console.log('???????????', webrtc)
-        webrtc.joinRoom('my-p2p-app-demo')
+		// ATTENTION: edit room on development
+		const room = 'balance-board'
+        webrtc.joinRoom(room)
         this.setState({
             webrtc
         })
     }
 
     handleCreatedPeer = (webrtc, peer) => {
-        console.log('handleCreatedPeer!!!!!!!!!!!!!')
         this.addChat(`Peer-${peer.id.substring(0, 5)} joined the room!`, ' ', true);
     }
     
     handlePeerData = (webrtc, type, payload, peer) => {
-        console.log('handlePeerData!!!!!!!!!!!!')
         switch(type) {
         case 'chat':
             this.addChat(`Peer-${peer.id.substring(0, 5)}`, payload);
@@ -78,7 +77,6 @@ class App extends Component {
     }
     
     addChat = (name, message, alert = false) => {
-		console.log('CHAT CHAT CHAT', name, message)
 		this.setState({
 			x: message,
 		});
@@ -86,8 +84,7 @@ class App extends Component {
 
 	render() {
 		const { options, x } = this.state
-		console.log('%c X','background: green;, color: white', x)
-		// muiTheme={getMuiTheme(darkBaseTheme)}
+
 		return (
 			<MuiThemeProvider key="themeProvider">
 				<div className="container" key="container">
