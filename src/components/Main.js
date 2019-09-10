@@ -12,6 +12,8 @@ import GamePlay from './GamePlay.js'
 
 import drawSky from './Sky.js'
 
+import drawSpace from './SpaceBackground.js'
+
 class App extends Component {
 	constructor(props) {
 		super(props);
@@ -31,7 +33,7 @@ class App extends Component {
 
 	componentDidMount() {
 		const node = this.skyRef
-		drawSky(node)
+		drawSpace(node)
 	}
 
 	checkLogin() {
@@ -65,7 +67,7 @@ class App extends Component {
     handleCreatedPeer = (webrtc, peer) => {
         this.addChat(`Peer-${peer.id.substring(0, 5)} joined the room!`, ' ', true);
     }
-    
+
     handlePeerData = (webrtc, type, payload, peer) => {
         switch(type) {
         case 'chat':
@@ -75,7 +77,7 @@ class App extends Component {
             return;
         };
     }
-    
+
     addChat = (name, message, alert = false) => {
 		this.setState({
 			x: message,
