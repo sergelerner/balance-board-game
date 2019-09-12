@@ -10,8 +10,8 @@ import { withWebRTC } from 'react-liowebrtc';
 const bulletThrowInterval = 100;
 const bulletSpeedInterval = 50;
 const bulletSpeedSize = 10;
-const enemiesThrowInterval = 5000;
-const enemiesSpeedInterval = 500;
+const enemiesThrowInterval = 2000;
+const enemiesSpeedInterval = 100;
 const enemiesSpeedSize = 20;
 const numberOfBlasters = 3;
 
@@ -20,7 +20,7 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pause: false,
+            pause: true,
             playerStyle: {
                 left: 0
             },
@@ -35,7 +35,7 @@ class Main extends React.Component {
             gameOver: false,
             snackBarOpen: false,
             numberOfBlasters,
-            shipImage: 'spaceship.png',
+            shipImage: 'ziv-surf.png',
             playerName: null,
         }
 
@@ -69,8 +69,11 @@ class Main extends React.Component {
 
         this.checkPlayerName();
         this.fire();
+        const containerWidth = this.refs.mainContainer.getBoundingClientRect().width
+
         this.setState({
-            bottom: this.getBoundaries().bottom - 120
+            bottom: this.getBoundaries().bottom - 120,
+            containerWidth: containerWidth,
         });
         this.refs.mainContainer.focus();
     }
@@ -113,7 +116,10 @@ class Main extends React.Component {
     }
 
     generateBullet(x = -1) {
-        x = x === -1 ? this.state.playerStyle.left : x;
+        const { x: xx } = this.props
+        const xPosition = this.calcShipPosition(xx)
+
+        x = x === -1 ? xPosition : x;
         let { bulletX, bulletY } = this.state;
         let { bottom } = this.getBoundaries();
         bulletX.push(x + 10);
@@ -132,7 +138,7 @@ class Main extends React.Component {
         this.setState({ enemiesX, enemiesY, enemyCount });
     }
 
-    mouseMove(event) {  
+    mouseMove(event) {
         if (!this.state.pause) {
             let { left, width } = this.getBoundaries();
             width = width - 30;
@@ -171,6 +177,9 @@ class Main extends React.Component {
     }
 
     updateEnemiesY() {
+        const { x } = this.props
+        const xPosition = this.calcShipPosition(x)
+
         let { enemiesY, enemiesX, playerStyle, bottom, lives } = this.state;
         for (let i = 0; i < enemiesY.length; i++) {
             if (enemiesY[i] > -enemiesSpeedSize) {
@@ -178,11 +187,11 @@ class Main extends React.Component {
                 // Check if it collides with spaceship
                 let ex = enemiesX[i];
                 let ey = enemiesY[i];
-                let px = playerStyle.left;
+                let px = xPosition; //playerStyle.left;
                 if (ey <= bottom - 10 && ey > bottom - 20 && Math.abs(ex - px) <= 60) {
                     console.log("--------------------Spaceship Hit-----------------");
                     this.showShipBlast();
-                    this.gamePause();
+                    // this.gamePause();
                     lives--;
                     this.setState({
                         lives: lives,
@@ -281,9 +290,9 @@ class Main extends React.Component {
                 pause: !this.state.pause,
             })
         } else {
-            this.setState({
-                pause: true
-            });
+            // this.setState({
+            //     pause: true
+            // });
         }
     }
 
@@ -333,8 +342,16 @@ class Main extends React.Component {
         }
     }
 
+    calcShipPosition(x) {
+        const { containerWidth } = this.state
+        const xPosition = (containerWidth / 2) + (x * 5)
+        return xPosition
+    }
+
     render() {
         const { x } = this.props
+
+        const xPosition = this.calcShipPosition(x)
 
         console.log('%c X','background: red;, color: white', x)
 
@@ -355,7 +372,8 @@ class Main extends React.Component {
                                 className="player"
                                 style={{ 
                                     alignContent: 'center', 
-                                    left: `calc(50% + ${(x * 10 + "px").toString()})`,
+                                    left: xPosition,
+                                    bottom: '0px'
                                 }}
                             >
                                 <img src={"assets/images/" + this.state.shipImage} className="playerImage" alt="P" />
